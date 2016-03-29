@@ -37,14 +37,6 @@ MU_TEST(test_assert_int_eq_fail) {
 	mu_assert_int_eq(5, bar);
 }
 
-MU_TEST(test_assert_double_eq) {
-	mu_assert_double_eq(0.1, dbar);
-}
-
-MU_TEST(test_assert_double_eq_fail) {
-	mu_assert_double_eq(0.2, dbar);
-}
-
 MU_TEST(test_fail) {
 	mu_fail("Fail now!");
 }
@@ -56,12 +48,10 @@ MU_TEST_SUITE(test_suite) {
 	MU_RUN_TEST(test_check);
 	MU_RUN_TEST(test_assert);
 	MU_RUN_TEST(test_assert_int_eq);
-	MU_RUN_TEST(test_assert_double_eq);
 
 	MU_RUN_TEST(test_check_fail);
 	MU_RUN_TEST(test_assert_fail);
 	MU_RUN_TEST(test_assert_int_eq_fail);
-	MU_RUN_TEST(test_assert_double_eq_fail);
 
 	MU_RUN_TEST(test_fail);
 }
