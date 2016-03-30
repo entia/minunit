@@ -1,52 +1,67 @@
-## MinUnit
+# MinUnit
 
-Minunit is a minimal unit testing framework for C/C++ self-contained in a
-single header file.
+[Image will go here]
 
-It provides a way to define and configure test suites and a few handy assertion
-types.  It reports the summary of the number of tests run, number of assertions
-and time elapsed.
+Minunit is a minimal unit testing framework for **embedded C/C++** self-contained in a single header file. It it also has a handy serial runner.
 
-Note that this project is based on:
-http://www.jera.com/techinfo/jtns/jtn002.html
+### Features
+- Single header file
+- Minimal dependency (just stdio.h)
+- Handy assertions types
+- Short test report
+
+### Embedded test runner
+Everyone that ever worked with embedded platforms knows, that coding without proper test setup can get very annoying once the codebase grows larger.
+
+- One command to read the test results form serial
+- Connects and disconnects from serial automatically
+- Easily integrates into existing build systems
+
 
 ## How to use it
 
+### Installation
+
+1. Download the latest release
+2. Extract and copy the header `minunit.h` and test runner `tester` for your platform into your project's folder
+
+### Running
+
+1. Compile and upload code to your target microcontroller
+2. run `./tester --baud 9600 --port /dev/tty.usbmodem1411` with your values
+3. You should see the test result on your screen
+
+### Example
+
 This is a minimal test suite written with minunit:
 
-	#include "minunit.h"
+```C
+#include <stdio.h>
+#include "minunit.h"
 
-	MU_TEST(test_check) {
-		mu_check(5 == 7);
-	}
-	MU_TEST_SUITE(test_suite) {
-		MU_RUN_TEST(test_check);
-	}
+MU_TEST(test_check) {
+	mu_check(5 == 7);
+}
+MU_TEST_SUITE(test_suite) {
+	MU_RUN_TEST(test_check);
+}
 
-	int main(int argc, char *argv[]) {
-		MU_RUN_SUITE(test_suite);
-		MU_REPORT();
-		return 0;
-	}
+int main(int argc, char *argv[]) {
+	// Initialize your serial communication on your uC and map it to stdout
+	// This is essential for you to see the test output
+	// stdout = Serial::make_stdout();
+	// See Atmega328 example in examples folder
 
-Which will produce the following output:
+	MU_RUN_SUITE(test_suite);
+	MU_REPORT();
+	return 0;
+}
+```
 
-	F
-	test_check failed:
-		readme_sample.c:4: 5 == 7
-
-
-	1 tests, 1 assertions, 1 failures
-
-	Finished in 0.00032524 seconds (real) 0.00017998 seconds (proc)
-
-Check out minunit_example.c to see a complete example. Compile with something
-like:
-
-	gcc minunit_example.c -lrt -lm -o minunit_example
-
-Don't forget to add -lrt for the timer and -lm for linking the function fabs
-used in mu_assert_double_eq.
+Expected output
+```
+Not yet
+```
 
 ## Setup and teardown functions
 
@@ -67,10 +82,7 @@ will show the failed condition and the message
 mu_assert_int_eq(expected, result, message): it will pass if the two numbers are
 equal or show their values and the message
 
-mu_assert_double_eq(expected, result, message): it will pass if the two values
-are almost equal or show their values and the message. The value of
-MINUNIT_EPSILON sets the threshold to determine if the values are close enough.
-
 ## Authors
 
-David Siñuela Pastor <siu.4coders@gmail.com>
+Samuel Vasko <samvasko@gmail.com> - embedded extensions
+David Siñuela Pastor <siu.4coders@gmail.com> - original minunit
