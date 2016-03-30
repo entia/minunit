@@ -58,6 +58,7 @@ static void (*minunit_teardown)(void) = NULL;
 
 /*  Run test suite and unset setup and teardown functions */
 #define MU_RUN_SUITE(suite_name) MU__SAFE_BLOCK(\
+	printf("\nSuite: %s\n", #suite_name);\
 	suite_name();\
 	minunit_setup = NULL;\
 	minunit_teardown = NULL;\
@@ -77,7 +78,6 @@ static void (*minunit_teardown)(void) = NULL;
 	minunit_run++;\
 	if (minunit_status) {\
 		minunit_fail++;\
-		printf("F");\
 		printf("\n%s\n", minunit_last_message);\
 	}\
 	fflush(stdout);\
@@ -86,24 +86,24 @@ static void (*minunit_teardown)(void) = NULL;
 
 /*  Report */
 #define MU_REPORT() MU__SAFE_BLOCK(\
-	printf("\n\n%d tests, %d assertions, %d failures\n", minunit_run, minunit_assert, minunit_fail);\
+	printf("\n\nTotal: %d tests, %d assertions, %d failures\n", minunit_run, minunit_assert, minunit_fail);\
 )
 
 /*  Assertions */
 #define mu_check(test) MU__SAFE_BLOCK(\
 	minunit_assert++;\
 	if (!(test)) {\
-		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "%s failed:\n\t%s:%d: %s", __func__, __FILE__, __LINE__, #test);\
+		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "x %s \n    %s:%d: %s", __func__, __FILE__, __LINE__, #test);\
 		minunit_status = 1;\
 		return;\
 	} else {\
-		printf(".");\
+		printf(". %s\n", __func__);\
 	}\
 )
 
 #define mu_fail(message) MU__SAFE_BLOCK(\
 	minunit_assert++;\
-	snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "%s failed:\n\t%s:%d: %s", __func__, __FILE__, __LINE__, message);\
+	snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "x %s \n    %s:%d: %s", __func__, __FILE__, __LINE__, message);\
 	minunit_status = 1;\
 	return;\
 )
@@ -111,11 +111,11 @@ static void (*minunit_teardown)(void) = NULL;
 #define mu_assert(test, message) MU__SAFE_BLOCK(\
 	minunit_assert++;\
 	if (!(test)) {\
-		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "%s failed:\n\t%s:%d: %s", __func__, __FILE__, __LINE__, message);\
+		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "x %s \n    %s:%d: %s", __func__, __FILE__, __LINE__, message);\
 		minunit_status = 1;\
 		return;\
 	} else {\
-		printf(".");\
+		printf(". %s\n", __func__);\
 	}\
 )
 
@@ -126,11 +126,11 @@ static void (*minunit_teardown)(void) = NULL;
 	minunit_tmp_e = (expected);\
 	minunit_tmp_r = (result);\
 	if (minunit_tmp_e != minunit_tmp_r) {\
-		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "%s failed:\n\t%s:%d: %d expected but was %d", __func__, __FILE__, __LINE__, minunit_tmp_e, minunit_tmp_r);\
+		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "x %s \n    %s:%d: %d expected but was %d", __func__, __FILE__, __LINE__, minunit_tmp_e, minunit_tmp_r);\
 		minunit_status = 1;\
 		return;\
 	} else {\
-		printf(".");\
+		printf(". %s\n", __func__);\
 	}\
 )
 
