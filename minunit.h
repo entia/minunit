@@ -134,6 +134,19 @@ static void (*minunit_teardown)(void) = NULL;
 	}\
 )
 
+#define mu_assert_bit_eq(expected, reg, bitn) MU__SAFE_BLOCK(\
+	unsigned int minunit_bit_r = (reg >> bitn) & 1;\
+	unsigned int minunit_bit_e = (expected);\
+	minunit_assert++;\
+	if (minunit_bit_e != minunit_bit_r) {\
+		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \n    %s:%d: %d expected but was %d", __func__, __FILE__, __LINE__, minunit_bit_e, minunit_bit_r);\
+		minunit_status = 1;\
+		return;\
+	} else {\
+		printf(". %s\n", __func__);\
+	}\
+)
+
 #ifdef __cplusplus
 }
 #endif
