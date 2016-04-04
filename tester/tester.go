@@ -1,7 +1,7 @@
 package main
 
 import "fmt"
-
+import "strings"
 import "os"
 import "log"
 import "bufio"
@@ -16,7 +16,6 @@ func main() {
 	}
 
 	_, err := flags.Parse(&opts)
-
 	if err != nil {
 		os.Exit(0)
 		log.Fatal(err)
@@ -41,7 +40,11 @@ func main() {
 
 	scanner := bufio.NewScanner(port)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		line := scanner.Text()
+		fmt.Println(line)
+		if strings.HasPrefix(line, "Total:") {
+			os.Exit(0)
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
