@@ -36,17 +36,17 @@
 #define MINUNIT_EPSILON 1E-12
 
 /*  Misc. counters */
-static int minunit_run = 0;
-static int minunit_assert = 0;
-static int minunit_fail = 0;
-static int minunit_status = 0;
+static int minunit_run __attribute__ ((unused)) = 0;
+static int minunit_assert __attribute__ ((unused)) = 0;
+static int minunit_fail __attribute__ ((unused)) = 0;
+static int minunit_status __attribute__ ((unused)) = 0;
 
 /*  Last message */
 static char minunit_last_message[MINUNIT_MESSAGE_LEN];
 
 /*  Test setup and teardown function pointers */
-static void (*minunit_setup)(void) = NULL;
-static void (*minunit_teardown)(void) = NULL;
+static void (*minunit_setup)(void) __attribute__ ((unused)) = NULL;
+static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 
 /*  Definitions */
 #define MU_TEST(method_name) static void method_name()
