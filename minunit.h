@@ -42,7 +42,7 @@ static int minunit_fail __attribute__ ((unused)) = 0;
 static int minunit_status __attribute__ ((unused)) = 0;
 
 /*  Last message */
-static char minunit_last_message[MINUNIT_MESSAGE_LEN];
+static char minunit_last_message[MINUNIT_MESSAGE_LEN] __attribute__ ((unused));
 
 /*  Test setup and teardown function pointers */
 static void (*minunit_setup)(void) __attribute__ ((unused)) = NULL;
