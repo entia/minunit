@@ -41,7 +41,7 @@ extern int minunit_run;
 extern int minunit_assert;
 extern int minunit_fail;
 
-static int minunit_status = 0;
+static int minunit_status __attribute__ ((unused)) = 0;
 
 /*  Last message */
 static char minunit_last_message[MINUNIT_MESSAGE_LEN] __attribute__ ((unused));
@@ -53,11 +53,10 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 /*  Definitions */
 #define MU_TEST(method_name) static void method_name()
 #define MU_TEST_SUITE(suite_name) static void suite_name()
-#define MU_INIT() MU__SAFE_BLOCK(\
+#define MU_INIT() \
 	int minunit_run = 0;\
 	int minunit_assert = 0;\
 	int minunit_fail = 0;\
-)
 
 #define MU__SAFE_BLOCK(block) do {\
 	block\
