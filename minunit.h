@@ -29,10 +29,11 @@
 #endif
 
 #include <stdio.h>
+#include <math.h>
 
 /*  Maximum length of last message */
 #define MINUNIT_MESSAGE_LEN 1024
-/*  Do not change */
+/*  Float comparision difference value */
 #define MINUNIT_EPSILON 1E-12
 
 /*  Misc. counters */
@@ -132,6 +133,21 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 		return;\
 	} else {\
 		printf(". %s\r\n", __func__);\
+	}\
+)
+
+#define mu_assert_float_eq(expected, result) MU__SAFE_BLOCK(\
+	double minunit_tmp_e;\
+	double minunit_tmp_r;\
+	minunit_assert++;\
+	minunit_tmp_e = (expected);\
+	minunit_tmp_r = (result);\
+	if (fabs(minunit_tmp_e-minunit_tmp_r) > MINUNIT_EPSILON) {\
+		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "%s failed:\n\t%s:%d: %g expected but was %g", __func__, __FILE__, __LINE__, minunit_tmp_e, minunit_tmp_r);\
+		minunit_status = 1;\
+		return;\
+	} else {\
+		printf(".");\
 	}\
 )
 
