@@ -34,7 +34,7 @@
 /*  Maximum length of last message */
 #define MINUNIT_MESSAGE_LEN 1024
 /*  Float comparision difference value */
-#define MINUNIT_EPSILON 1E-12
+#define MINUNIT_EPSILON 1E-6
 
 /*  Misc. counters */
 static int minunit_run __attribute__ ((unused)) = 0;
@@ -75,7 +75,7 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 #define MU_RUN_TEST(test) MU__SAFE_BLOCK(\
 	if (minunit_setup) (*minunit_setup)();\
 	minunit_status = 0;\
-	printf("Test: "#test"\r\r\n");\
+	printf("Test: "#test"\r\n");\
 	test();\
 	minunit_run++;\
 	if (minunit_status) {\
@@ -90,6 +90,8 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 #define MU_REPORT() MU__SAFE_BLOCK(\
 	printf("\r\n\r\nTotal: %d tests, %d assertions, %d failures\r\n", minunit_run, minunit_assert, minunit_fail);\
 )
+/* Printed when test passed */
+#define MU_ASSERT_OK() printf(".")
 
 /*  Assertions */
 #define mu_check(test) MU__SAFE_BLOCK(\
@@ -99,7 +101,7 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 		minunit_status = 1;\
 		return;\
 	} else {\
-		printf(". %s\r\n", __func__);\
+		MU_ASSERT_OK();\
 	}\
 )
 
@@ -117,7 +119,7 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 		minunit_status = 1;\
 		return;\
 	} else {\
-		printf(". %s\r\n", __func__);\
+		MU_ASSERT_OK();\
 	}\
 )
 
@@ -132,7 +134,7 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 		minunit_status = 1;\
 		return;\
 	} else {\
-		printf(". %s\r\n", __func__);\
+		MU_ASSERT_OK();\
 	}\
 )
 
@@ -147,7 +149,7 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 		minunit_status = 1;\
 		return;\
 	} else {\
-		printf(".");\
+		MU_ASSERT_OK();\
 	}\
 )
 
@@ -160,7 +162,7 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 		minunit_status = 1;\
 		return;\
 	} else {\
-		printf(". %s\r\n", __func__);\
+		MU_ASSERT_OK();\
 	}\
 )
 
