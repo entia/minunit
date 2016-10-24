@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include "debug.h"
 
 /*  Maximum length of last message */
 #define MINUNIT_MESSAGE_LEN 1024
@@ -164,6 +165,23 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 	minunit_assert++;\
 	if (minunit_bit_e != minunit_bit_r) {\
 		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \r\n    %s:%d: %d expected but was %d", __func__, __FILE__, __LINE__, minunit_bit_e, minunit_bit_r);\
+		minunit_status = 1;\
+		return;\
+	} else {\
+		MU_ASSERT_OK();\
+	}\
+)
+
+#define mu_confirm(message) MU__SAFE_BLOCK(\
+	char output;\
+	puts(message);\
+	printf("y for yes, any key for no");\
+	fflush(stdout);\
+	fflush(stdin);\
+	output = debug_getchar();\
+	printf(" %c\n", output);\
+	if (output != 121) {\
+		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \r\n    %s:%d: %s", __func__, __FILE__, __LINE__, message);\
 		minunit_status = 1;\
 		return;\
 	} else {\
