@@ -173,12 +173,10 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 )
 
 #define mu_confirm(message) MU__SAFE_BLOCK(\
-	char output;\
-	puts(message);\
-	printf("y for yes, any key for no");\
+	printf("%s\r\ny for yes, any key for no", message);\
 	fflush(stdout);\
 	fflush(stdin);\
-	output = debug_getchar();\
+	char output = debug_getchar();\
 	printf(" %c\n", output);\
 	if (output != 121) {\
 		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \r\n    %s:%d: %s", __func__, __FILE__, __LINE__, message);\
