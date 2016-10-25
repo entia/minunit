@@ -98,10 +98,10 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 )
 
 /* Printed when test passed */
-#define MU_ASSERT_OK() printf(".")
+#define __MU_ASSERT_OK() printf(".")
 
 /* Printed when test failed */
-#define MU_ASSERT_FAIL(message, ...) MU__SAFE_BLOCK(\
+#define __MU_ASSERT_FAIL(message, ...) MU__SAFE_BLOCK(\
 	snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \r\n    %s:%d: "#message, __func__, __FILE__, __LINE__, __VA_ARGS__);\
 	minunit_status = 1;\
 	return;\
@@ -110,9 +110,9 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 #define __MU_ASSERT(test, message, ...)  MU__SAFE_BLOCK(\
 	minunit_assert++;\
 	if ((test)) {\
-		MU_ASSERT_OK();\
+		__MU_ASSERT_OK();\
 	} else {\
-		MU_ASSERT_FAIL(message, __VA_ARGS__);\
+		__MU_ASSERT_FAIL(message, __VA_ARGS__);\
 	}\
 )
 
