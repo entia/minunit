@@ -96,95 +96,48 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 #define MU_REPORT() MU__SAFE_BLOCK(\
 	printf("\r\n\r\nTotal: %d tests, %d assertions, %d failures\r\n", minunit_run, minunit_assert, minunit_fail);\
 )
+
 /* Printed when test passed */
 #define MU_ASSERT_OK() printf(".")
 
-/*  Assertions */
-#define mu_check(test) MU__SAFE_BLOCK(\
-	minunit_assert++;\
-	if (!(test)) {\
-		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \r\n    %s:%d: %s", __func__, __FILE__, __LINE__, #test);\
-		minunit_status = 1;\
-		return;\
-	} else {\
-		MU_ASSERT_OK();\
-	}\
-)
-
-#define mu_fail(message) MU__SAFE_BLOCK(\
-	minunit_assert++;\
-	snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \r\n    %s:%d: %s", __func__, __FILE__, __LINE__, message);\
+/* Printed when test failed */
+#define MU_ASSERT_FAIL(message, ...) MU__SAFE_BLOCK(\
+	snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \r\n    %s:%d: "#message, __func__, __FILE__, __LINE__, __VA_ARGS__);\
 	minunit_status = 1;\
 	return;\
 )
 
-#define mu_assert(test, message) MU__SAFE_BLOCK(\
+#define __MU_ASSERT(test, message, ...)  MU__SAFE_BLOCK(\
 	minunit_assert++;\
-	if (!(test)) {\
-		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \r\n    %s:%d: %s", __func__, __FILE__, __LINE__, message);\
-		minunit_status = 1;\
-		return;\
-	} else {\
+	if ((test)) {\
 		MU_ASSERT_OK();\
+	} else {\
+		MU_ASSERT_FAIL(message, __VA_ARGS__);\
 	}\
 )
 
+/*  Assertions */
+#define mu_check(test) __MU_ASSERT(test, "%s", "Test failed")
+#define mu_fail(message) __MU_ASSERT(0, "%s", message)
+#define mu_assert(test, message) __MU_ASSERT(test, "%s", message)
+
 #define mu_assert_int_eq(expected, result) MU__SAFE_BLOCK(\
-	int minunit_tmp_e;\
-	int minunit_tmp_r;\
-	minunit_assert++;\
-	minunit_tmp_e = (expected);\
-	minunit_tmp_r = (result);\
-	if (minunit_tmp_e != minunit_tmp_r) {\
-		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \r\n    %s:%d: %d expected but was %d", __func__, __FILE__, __LINE__, minunit_tmp_e, minunit_tmp_r);\
-		minunit_status = 1;\
-		return;\
-	} else {\
-		MU_ASSERT_OK();\
-	}\
+	int minunit_tmp_e = (expected);\
+	int minunit_tmp_r = (result);\
+	__MU_ASSERT(minunit_tmp_e == minunit_tmp_r, "%d expected but was %d", minunit_tmp_e, minunit_tmp_r);\
 )
 
 #define mu_assert_float_eq(expected, result) MU__SAFE_BLOCK(\
-	double minunit_tmp_e;\
-	double minunit_tmp_r;\
-	minunit_assert++;\
-	minunit_tmp_e = (expected);\
-	minunit_tmp_r = (result);\
-	if (fabs(minunit_tmp_e-minunit_tmp_r) > MINUNIT_EPSILON) {\
-		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "%s failed:\n\t%s:%d: %g expected but was %g", __func__, __FILE__, __LINE__, minunit_tmp_e, minunit_tmp_r);\
-		minunit_status = 1;\
-		return;\
-	} else {\
-		MU_ASSERT_OK();\
-	}\
-)
-
-#define mu_assert_bit_eq(expected, reg, bitn) MU__SAFE_BLOCK(\
-	unsigned int minunit_bit_r = (reg >> bitn) & 1;\
-	unsigned int minunit_bit_e = (expected);\
-	minunit_assert++;\
-	if (minunit_bit_e != minunit_bit_r) {\
-		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \r\n    %s:%d: %d expected but was %d", __func__, __FILE__, __LINE__, minunit_bit_e, minunit_bit_r);\
-		minunit_status = 1;\
-		return;\
-	} else {\
-		MU_ASSERT_OK();\
-	}\
+	float minunit_tmp_e = (expected);\
+	float minunit_tmp_r = (result);\
+	__MU_ASSERT(fabs(minunit_tmp_e - minunit_tmp_r) < MINUNIT_EPSILON, "%g expected but was %g", minunit_tmp_e, minunit_tmp_r);\
 )
 
 #define mu_confirm(message) MU__SAFE_BLOCK(\
-	printf("%s\r\ny for yes, any key for no", message);\
+	printf("%s\r\ny for yes, any key for no:\r\n", message);\
 	fflush(stdout);\
 	fflush(stdin);\
-	char output = debug_getchar();\
-	printf(" %c\n", output);\
-	if (output != 121) {\
-		snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \r\n    %s:%d: %s", __func__, __FILE__, __LINE__, message);\
-		minunit_status = 1;\
-		return;\
-	} else {\
-		MU_ASSERT_OK();\
-	}\
+	__MU_ASSERT(debug_getchar() == 'y', "%s", message);\
 )
 
 #ifdef __cplusplus
