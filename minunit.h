@@ -42,14 +42,14 @@ extern int minunit_run;
 extern int minunit_assert;
 extern int minunit_fail;
 
-static int minunit_status __attribute__ ((unused)) = 0;
+static int minunit_status = 0;
 
 /*  Last message */
-static char minunit_last_message[MINUNIT_MESSAGE_LEN] __attribute__ ((unused));
+static char minunit_last_message[MINUNIT_MESSAGE_LEN];
 
 /*  Test setup and teardown function pointers */
-static void (*minunit_setup)(void) __attribute__ ((unused)) = NULL;
-static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
+static void (*minunit_setup)(void) = NULL;
+static void (*minunit_teardown)(void) = NULL;
 
 /*  Definitions */
 #define MU_TEST(method_name) static void method_name()
@@ -81,12 +81,12 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 #define MU_RUN_TEST(test) MU__SAFE_BLOCK(\
 	if (minunit_setup) (*minunit_setup)();\
 	minunit_status = 0;\
-	printf("Test: "#test"\r\n");\
+	printf("\r\nTest: "#test"\r\n");\
 	test();\
 	minunit_run++;\
 	if (minunit_status) {\
 		minunit_fail++;\
-		printf("\r\n%s\r\n", minunit_last_message);\
+		printf("%s\r\n", minunit_last_message);\
 	}\
 	fflush(stdout);\
 	if (minunit_teardown) (*minunit_teardown)();\
@@ -98,11 +98,11 @@ static void (*minunit_teardown)(void) __attribute__ ((unused)) = NULL;
 )
 
 /* Printed when test passed */
-#define __MU_ASSERT_OK() printf(".")
+#define __MU_ASSERT_OK()
 
 /* Printed when test failed */
 #define __MU_ASSERT_FAIL(message, ...) MU__SAFE_BLOCK(\
-	snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "F %s \r\n    %s:%d: "#message, __func__, __FILE__, __LINE__, __VA_ARGS__);\
+	snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "Fail: %s:%d: "#message, __FILE__, __LINE__, __VA_ARGS__);\
 	minunit_status = 1;\
 	return;\
 )
