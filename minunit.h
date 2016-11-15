@@ -30,7 +30,6 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "debug.h"
 
 /*  Maximum length of last message */
 #define MINUNIT_MESSAGE_LEN 1024
@@ -43,6 +42,10 @@ extern int minunit_assert;
 extern int minunit_fail;
 
 static int minunit_status = 0;
+
+/*  stdio functions */
+#define MU_PRINTF printf
+#define MU_GETCHAR getchar
 
 /*  Last message */
 static char minunit_last_message[MINUNIT_MESSAGE_LEN];
@@ -65,7 +68,7 @@ static void (*minunit_teardown)(void) = NULL;
 
 /*  Run test suite and unset setup and teardown functions */
 #define MU_RUN_SUITE(suite_name) MU__SAFE_BLOCK(\
-	printf("\r\nSuite: %s\r\n", #suite_name);\
+	MU_PRINTF("\r\nSuite: %s\r\n", #suite_name);\
 	suite_name();\
 	minunit_setup = NULL;\
 	minunit_teardown = NULL;\
@@ -81,12 +84,12 @@ static void (*minunit_teardown)(void) = NULL;
 #define MU_RUN_TEST(test) MU__SAFE_BLOCK(\
 	if (minunit_setup) (*minunit_setup)();\
 	minunit_status = 0;\
-	printf("\r\nTest: "#test"\r\n");\
+	MU_PRINTF("\r\nTest: "#test"\r\n");\
 	test();\
 	minunit_run++;\
 	if (minunit_status) {\
 		minunit_fail++;\
-		printf("%s\r\n", minunit_last_message);\
+		MU_PRINTF("%s\r\n", minunit_last_message);\
 	}\
 	fflush(stdout);\
 	if (minunit_teardown) (*minunit_teardown)();\
@@ -94,25 +97,15 @@ static void (*minunit_teardown)(void) = NULL;
 
 /*  Report */
 #define MU_REPORT() MU__SAFE_BLOCK(\
-	printf("\r\n\r\nTotal: %d tests, %d assertions, %d failures\r\n", minunit_run, minunit_assert, minunit_fail);\
-)
-
-/* Printed when test passed */
-#define __MU_ASSERT_OK()
-
-/* Printed when test failed */
-#define __MU_ASSERT_FAIL(message, ...) MU__SAFE_BLOCK(\
-	snprintf(minunit_last_message, MINUNIT_MESSAGE_LEN, "Fail: %s:%d: "#message, __FILE__, __LINE__, __VA_ARGS__);\
-	minunit_status = 1;\
-	return;\
+	MU_PRINTF("\r\n\r\nTotal: %d tests, %d assertions, %d failures\r\n", minunit_run, minunit_assert, minunit_fail);\
 )
 
 #define __MU_ASSERT(test, message, ...)  MU__SAFE_BLOCK(\
 	minunit_assert++;\
-	if ((test)) {\
-		__MU_ASSERT_OK();\
-	} else {\
-		__MU_ASSERT_FAIL(message, __VA_ARGS__);\
+	if (!(test)) {\
+		MU_PRINTF(minunit_last_message, MINUNIT_MESSAGE_LEN, "Fail: %s:%d: "#message, __FILE__, __LINE__, __VA_ARGS__);\
+		minunit_status = 1;\
+		return;\
 	}\
 )
 
@@ -134,10 +127,10 @@ static void (*minunit_teardown)(void) = NULL;
 )
 
 #define mu_confirm(message) MU__SAFE_BLOCK(\
-	printf("%s\r\ny for yes, any key for no:\r\n", message);\
+	MU_PRINTF("%s\r\ny for yes, any key for no:\r\n", message);\
 	fflush(stdout);\
 	fflush(stdin);\
-	__MU_ASSERT(debug_getchar() == 'y', "%s", message);\
+	__MU_ASSERT(MU_GETCHAR() == 'y', "%s", message);\
 )
 
 #ifdef __cplusplus
