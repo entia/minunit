@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include "debug.h"
 
 /*  Maximum length of last message */
 #define MINUNIT_MESSAGE_LEN 1024
@@ -45,7 +46,7 @@ static int minunit_status = 0;
 
 /*  stdio functions */
 #define MU_PRINTF printf
-#define MU_GETCHAR getchar
+#define MU_GETCHAR debug_getchar
 
 /*  Last message */
 static char minunit_last_message[MINUNIT_MESSAGE_LEN];
