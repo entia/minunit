@@ -31,8 +31,6 @@
 #include <stdio.h>
 #include <math.h>
 
-/*  Maximum length of last message */
-#define MINUNIT_MESSAGE_LEN 1024
 /*  Float comparision difference value */
 #define MINUNIT_EPSILON 1E-6
 
@@ -46,9 +44,6 @@ static int minunit_status = 0;
 /*  stdio functions */
 #define MU_PRINTF printf
 #define MU_GETCHAR getchar
-
-/*  Last message */
-static char minunit_last_message[MINUNIT_MESSAGE_LEN];
 
 /*  Test setup and teardown function pointers */
 static void (*minunit_setup)(void) = NULL;
@@ -87,10 +82,6 @@ static void (*minunit_teardown)(void) = NULL;
 	MU_PRINTF("\r\nTest: "#test"\r\n");\
 	test();\
 	minunit_run++;\
-	if (minunit_status) {\
-		minunit_fail++;\
-		MU_PRINTF("%s\r\n", minunit_last_message);\
-	}\
 	fflush(stdout);\
 	if (minunit_teardown) (*minunit_teardown)();\
 )
@@ -103,8 +94,9 @@ static void (*minunit_teardown)(void) = NULL;
 #define __MU_ASSERT(test, message, ...)  MU__SAFE_BLOCK(\
 	minunit_assert++;\
 	if (!(test)) {\
-		MU_PRINTF(minunit_last_message, MINUNIT_MESSAGE_LEN, "Fail: %s:%d: "#message, __FILE__, __LINE__, __VA_ARGS__);\
+		MU_PRINTF("  Fail: %s:%d: "#message"\r\n", __FILE__, __LINE__, __VA_ARGS__);\
 		minunit_status = 1;\
+		minunit_fail++;\
 		return;\
 	}\
 )
