@@ -83,6 +83,7 @@ static void (*minunit_teardown)(void) = NULL;
 	MU_PRINTF("\r\nTest: "#test"\r\n");\
 	test();\
 	minunit_run++;\
+	MU_PRINTF("  OK\r\n");\
 	fflush(stdout);\
 	if (minunit_teardown) (*minunit_teardown)();\
 )
