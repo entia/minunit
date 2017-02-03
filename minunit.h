@@ -32,25 +32,23 @@
 #include <math.h>
 #include "debug.h"
 
-/*  Float comparision difference value */
+/* Float comparision difference value */
 #define MINUNIT_EPSILON 1E-6
 
-/*  Misc. counters */
+/* Misc. counters */
 extern int minunit_run;
 extern int minunit_assert;
 extern int minunit_fail;
 
-static int minunit_status = 0;
-
-/*  stdio functions */
+/* stdio functions */
 #define MU_PRINTF printf
 #define MU_GETCHAR debug_getchar
 
-/*  Test setup and teardown function pointers */
+/* Test setup and teardown function pointers */
 static void (*minunit_setup)(void) = NULL;
 static void (*minunit_teardown)(void) = NULL;
 
-/*  Definitions */
+/* Definitions */
 #define MU_TEST(method_name) static void method_name()
 #define MU_TEST_SUITE(suite_name) static void suite_name()
 #define MU_INIT() \
@@ -62,7 +60,7 @@ static void (*minunit_teardown)(void) = NULL;
 	block\
 } while(0)
 
-/*  Run test suite and unset setup and teardown functions */
+/* Run test suite and unset setup and teardown functions */
 #define MU_RUN_SUITE(suite_name) MU__SAFE_BLOCK(\
 	MU_PRINTF("\r\nSuite: %s\r\n", #suite_name);\
 	suite_name();\
@@ -70,40 +68,46 @@ static void (*minunit_teardown)(void) = NULL;
 	minunit_teardown = NULL;\
 )
 
-/*  Configure setup and teardown functions */
+/* Configure setup and teardown functions */
 #define MU_SUITE_CONFIGURE(setup_fun, teardown_fun) MU__SAFE_BLOCK(\
 	minunit_setup = setup_fun;\
 	minunit_teardown = teardown_fun;\
 )
 
-/*  Test runner */
+/* Test runner */
 #define MU_RUN_TEST(test) MU__SAFE_BLOCK(\
 	if (minunit_setup) (*minunit_setup)();\
-	minunit_status = 0;\
 	MU_PRINTF("\r\nTest: "#test"\r\n");\
 	test();\
 	minunit_run++;\
-	MU_PRINTF("  OK\r\n");\
 	fflush(stdout);\
 	if (minunit_teardown) (*minunit_teardown)();\
 )
 
-/*  Report */
+/* Repeat same test number of times */
+#define MU_REPEAT_TEST(test, repeat_count) MU__SAFE_BLOCK(\
+	for (int i = 0; i < repeat_count; ++i)\
+		MU_RUN_TEST(test);\
+)\
+
+/* Report */
 #define MU_REPORT() MU__SAFE_BLOCK(\
 	MU_PRINTF("\r\n\r\nTotal: %d tests, %d assertions, %d failures\r\n", minunit_run, minunit_assert, minunit_fail);\
 )
 
+/* Base Assert Function used for everything */
 #define __MU_ASSERT(test, message, ...)  MU__SAFE_BLOCK(\
 	minunit_assert++;\
 	if (!(test)) {\
 		MU_PRINTF("  Fail: %s:%d: "#message"\r\n", __FILE__, __LINE__, __VA_ARGS__);\
-		minunit_status = 1;\
 		minunit_fail++;\
 		return;\
+	} else { \
+		MU_PRINTF("  OK\r\n");\
 	}\
 )
 
-/*  Assertions */
+/* Assertions */
 #define mu_check(test) __MU_ASSERT(test, "%s", "Test failed")
 #define mu_fail(message) __MU_ASSERT(0, "%s", message)
 #define mu_assert(test, message) __MU_ASSERT(test, "%s", message)
