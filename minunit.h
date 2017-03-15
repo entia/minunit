@@ -43,19 +43,39 @@ static int minunit_status = 0;
 static void (*minunit_setup)(void) = NULL;
 static void (*minunit_teardown)(void) = NULL;
 
-/*  Definitions */
+/**
+ * @brief      Helper for defining test function
+ * @param      method_name  The method name
+ */
 #define MU_TEST(method_name) static void method_name()
-#define MU_TEST_SUITE(suite_name) static void suite_name()
+
+/**
+ * @brief      Helper for defining a suite
+ * @param      method_name  The method name
+ */
+#define MU_TEST_SUITE(suite_name) void suite_name()
+
+/**
+ * @brief      Declares the extern variables that store information about test
+ * @note 	   This should be called only once generally from the main test function
+ */
 #define MU_INIT() \
 	int minunit_run = 0;\
 	int minunit_assert = 0;\
 	int minunit_fail = 0;\
 
+/**
+ * @brief      Protects the macro insides form the outside world
+ * @param      block  The block to be in separate scope
+ */
 #define MU__SAFE_BLOCK(block) do {\
 	block\
 } while(0)
 
-/*  Run test suite and unset setup and teardown functions */
+/**
+ * @brief      Run a suite (collection of tests)
+ * @param      suite_name  The suite name (should be void f(void))
+ */
 #define MU_RUN_SUITE(suite_name) MU__SAFE_BLOCK(\
 	MU_PRINTF("\r\nSuite: %s\r\n", #suite_name);\
 	suite_name();\
@@ -63,13 +83,20 @@ static void (*minunit_teardown)(void) = NULL;
 	minunit_teardown = NULL;\
 )
 
-/*  Configure setup and teardown functions */
+/**
+ * @brief      Defines functions that will run before and after each test in suite
+ * @param      setup_fun     The setup fun
+ * @param      teardown_fun  The teardown fun
+ */
 #define MU_SUITE_CONFIGURE(setup_fun, teardown_fun) MU__SAFE_BLOCK(\
 	minunit_setup = setup_fun;\
 	minunit_teardown = teardown_fun;\
 )
 
-/*  Test runner */
+/**
+ * @brief      Run a function as test
+ * @param      test  The test function (should be void f(void))
+ */
 #define MU_RUN_TEST(test) MU__SAFE_BLOCK(\
 	if (minunit_setup) (*minunit_setup)();\
 	minunit_status = 0;\
@@ -81,11 +108,19 @@ static void (*minunit_teardown)(void) = NULL;
 	if (minunit_teardown) (*minunit_teardown)();\
 )
 
-/*  Report */
+/**
+ * @brief      Print summary statistics about the test
+ */
 #define MU_REPORT() MU__SAFE_BLOCK(\
 	MU_PRINTF("\r\n\r\nTotal: %d tests, %d assertions, %d failures\r\n", minunit_run, minunit_assert, minunit_fail);\
 )
 
+/**
+ * @brief      [Private] Master assert
+ * @param      test     The test to be preformed
+ * @param      message  The format string, pretend this is a printf
+ * @param      ...      Values for the pretend printf beforehand
+ */
 #define __MU_ASSERT(test, message, ...)  MU__SAFE_BLOCK(\
 	minunit_assert++;\
 	if (!(test)) {\
@@ -96,11 +131,30 @@ static void (*minunit_teardown)(void) = NULL;
 	}\
 )
 
-/*  Assertions */
+/**
+ * @brief      Check if value is truthy
+ * @param      test     The value to be checked
+ */
 #define mu_check(test) __MU_ASSERT(test, "%s", "Test failed")
+
+/**
+ * @brief      Just fail
+ * @param      message  The message that will be printed
+ */
 #define mu_fail(message) __MU_ASSERT(0, "%s", message)
+
+/**
+ * @brief      Check if the value is truthy print message on fail
+ * @param      test     The value to be checked
+ * @param      message  The message that will be printed on error
+ */
 #define mu_assert(test, message) __MU_ASSERT(test, "%s", message)
 
+/**
+ * @brief      Check two ints for equality
+ * @param      expected  The expected value
+ * @param      result    The computed value
+ */
 #define mu_assert_int_eq(expected, result) MU__SAFE_BLOCK(\
 	__MU_ASSERT(\
 		expected == result, \
@@ -109,6 +163,25 @@ static void (*minunit_teardown)(void) = NULL;
 	);\
 )
 
+/**
+ * @brief      Check two ints for equality
+ * @param      expected  The expected value
+ * @param      result    The computed value
+ */
+#define mu_assert_long_int_eq(expected, result) MU__SAFE_BLOCK(\
+	__MU_ASSERT(\
+		expected == result, \
+		"%ld expected but was %ld", \
+		expected, result \
+	);\
+)
+
+/**
+ * @brief      Check if two floats are similar
+ * @param      expected  The expected value
+ * @param      result    The computed value
+ * @param      epsilon   The maximum allowable difference between inputs
+ */
 #define mu_assert_float_close(expected, result, epsilon) MU__SAFE_BLOCK(\
 	float diff = fabs((expected) - (result)); \
 	__MU_ASSERT( \
@@ -119,6 +192,12 @@ static void (*minunit_teardown)(void) = NULL;
 	);\
 )
 
+/**
+ * @brief      Check if two doubles are similar
+ * @param      expected  The expected value
+ * @param      result    The computed value
+ * @param      epsilon   The maximum allowable difference between inputs
+ */
 #define mu_assert_double_close(expected, result, epsilon) MU__SAFE_BLOCK(\
 	double diff = fabs((expected) - (result)); \
 	__MU_ASSERT( \
@@ -129,6 +208,10 @@ static void (*minunit_teardown)(void) = NULL;
 	);\
 )
 
+/**
+ * @brief      Prompt user to verify something, they choose 'y' or 'n'
+ * @param      message  The message to be showed to a user (generally a question)
+ */
 #define mu_confirm(message) MU__SAFE_BLOCK(\
 	MU_PRINTF("  %s\r\n  y for yes, any key for no:\r\n", message);\
 	fflush(stdout);\
