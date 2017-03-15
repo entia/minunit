@@ -77,7 +77,8 @@ static void (*minunit_teardown)(void) = NULL;
  * @param      suite_name  The suite name (should be void f(void))
  */
 #define MU_RUN_SUITE(suite_name) MU__SAFE_BLOCK(\
-	MU_PRINTF("\r\nSuite: %s\r\n", #suite_name);\
+	MU_PRINTF("\r\n");\
+	MU_PRINTF("Suite: %s\r\n", #suite_name);\
 	suite_name();\
 	minunit_setup = NULL;\
 	minunit_teardown = NULL;\
@@ -100,7 +101,8 @@ static void (*minunit_teardown)(void) = NULL;
 #define MU_RUN_TEST(test) MU__SAFE_BLOCK(\
 	if (minunit_setup) (*minunit_setup)();\
 	minunit_status = 0;\
-	MU_PRINTF("\r\nTest: "#test"\r\n");\
+	MU_PRINTF("\r\n");\
+	MU_PRINTF("Test: "#test"\r\n");\
 	test();\
 	minunit_run++;\
 	if(!minunit_status) MU_PRINTF("  OK\r\n");\
@@ -112,7 +114,8 @@ static void (*minunit_teardown)(void) = NULL;
  * @brief      Print summary statistics about the test
  */
 #define MU_REPORT() MU__SAFE_BLOCK(\
-	MU_PRINTF("\r\n\r\nTotal: %d tests, %d assertions, %d failures\r\n", minunit_run, minunit_assert, minunit_fail);\
+	MU_PRINTF("\r\n\r\n");\
+	MU_PRINTF("Total: %d tests, %d assertions, %d failures\r\n", minunit_run, minunit_assert, minunit_fail);\
 )
 
 /**
@@ -124,7 +127,8 @@ static void (*minunit_teardown)(void) = NULL;
 #define __MU_ASSERT(test, message, ...)  MU__SAFE_BLOCK(\
 	minunit_assert++;\
 	if (!(test)) {\
-		MU_PRINTF("  Fail: \""#test"\" at %s:%d\r\n  Reason: "message"\r\n", __FILE__, __LINE__, __VA_ARGS__);\
+		MU_PRINTF("  Fail: \""#test"\" at %s:%d\r\n", __FILE__, __LINE__);\
+		MU_PRINTF("  Reason: "message"\r\n", __VA_ARGS__);\
 		minunit_status = 1;\
 		minunit_fail++;\
 		return;\
