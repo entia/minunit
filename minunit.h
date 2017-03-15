@@ -31,9 +31,6 @@
 #include <stdio.h>
 #include <math.h>
 
-/*  Float comparision difference value */
-#define MINUNIT_EPSILON 1E-6
-
 /*  Misc. counters */
 extern int minunit_run;
 extern int minunit_assert;
@@ -82,6 +79,7 @@ static void (*minunit_teardown)(void) = NULL;
 	MU_PRINTF("\r\nTest: "#test"\r\n");\
 	test();\
 	minunit_run++;\
+	if(!minunit_status) MU_PRINTF("  OK\r\n");\
 	fflush(stdout);\
 	if (minunit_teardown) (*minunit_teardown)();\
 )
@@ -94,7 +92,7 @@ static void (*minunit_teardown)(void) = NULL;
 #define __MU_ASSERT(test, message, ...)  MU__SAFE_BLOCK(\
 	minunit_assert++;\
 	if (!(test)) {\
-		MU_PRINTF("  Fail: %s:%d: "#message"\r\n", __FILE__, __LINE__, __VA_ARGS__);\
+		MU_PRINTF("  Fail: \""#test"\" at %s:%d\r\n  Reason: "message"\r\n", __FILE__, __LINE__, __VA_ARGS__);\
 		minunit_status = 1;\
 		minunit_fail++;\
 		return;\
@@ -107,15 +105,31 @@ static void (*minunit_teardown)(void) = NULL;
 #define mu_assert(test, message) __MU_ASSERT(test, "%s", message)
 
 #define mu_assert_int_eq(expected, result) MU__SAFE_BLOCK(\
-	int minunit_tmp_e = (expected);\
-	int minunit_tmp_r = (result);\
-	__MU_ASSERT(minunit_tmp_e == minunit_tmp_r, "%d expected but was %d", minunit_tmp_e, minunit_tmp_r);\
+	__MU_ASSERT(\
+		expected == result, \
+		"%d expected but was %d", \
+		expected, result \
+	);\
 )
 
-#define mu_assert_float_eq(expected, result) MU__SAFE_BLOCK(\
-	float minunit_tmp_e = (expected);\
-	float minunit_tmp_r = (result);\
-	__MU_ASSERT(fabs(minunit_tmp_e - minunit_tmp_r) < MINUNIT_EPSILON, "%g expected but was %g", minunit_tmp_e, minunit_tmp_r);\
+#define mu_assert_float_close(expected, result, epsilon) MU__SAFE_BLOCK(\
+	float diff = fabs((expected) - (result)); \
+	__MU_ASSERT( \
+		diff < (epsilon), \
+		"Difference of %f not within %f, %f !~= %f", \
+		 diff, epsilon, \
+		(expected), (result) \
+	);\
+)
+
+#define mu_assert_double_close(expected, result, epsilon) MU__SAFE_BLOCK(\
+	double diff = fabs((expected) - (result)); \
+	__MU_ASSERT( \
+		diff < (epsilon), \
+		"Difference of %g not within %g, %g !~= %g", \
+		 diff, epsilon, \
+		(expected), (result) \
+	);\
 )
 
 #define mu_confirm(message) MU__SAFE_BLOCK(\
