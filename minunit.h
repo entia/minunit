@@ -133,10 +133,12 @@ static void (*minunit_teardown)(void) = NULL;
 )
 
 #define mu_confirm(message) MU__SAFE_BLOCK(\
-	MU_PRINTF("%s\r\ny for yes, any key for no:\r\n", message);\
+	MU_PRINTF("  %s\r\n  y for yes, any key for no:\r\n", message);\
 	fflush(stdout);\
 	fflush(stdin);\
-	__MU_ASSERT(MU_GETCHAR() == 'y', "%s", message);\
+	char mu_input;\
+	do { mu_input = getchar(); } while(mu_input != 'y' && mu_input != 'n');\
+	__MU_ASSERT(mu_input == 'y', "%s", "  "message);\
 )
 
 #ifdef __cplusplus
