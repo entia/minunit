@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include "minunit_config.h"
 
 /*  Misc. counters */
 extern int minunit_run;
@@ -37,10 +38,6 @@ extern int minunit_assert;
 extern int minunit_fail;
 
 static int minunit_status = 0;
-
-/*  stdio functions */
-#define MU_PRINTF printf
-#define MU_GETCHAR getchar
 
 /*  Test setup and teardown function pointers */
 static void (*minunit_setup)(void) = NULL;
