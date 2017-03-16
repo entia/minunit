@@ -187,12 +187,12 @@ static void (*minunit_teardown)(void) = NULL;
  * @param      epsilon   The maximum allowable difference between inputs
  */
 #define mu_assert_float_close(expected, result, epsilon) MU__SAFE_BLOCK(\
-	float diff = fabs((expected) - (result)); \
+	float diff = fabsf((expected) - (result)); \
 	__MU_ASSERT( \
 		diff < (epsilon), \
 		"Difference of %f not within %f, %f !~= %f", \
-		 diff, epsilon, \
-		(expected), (result) \
+		(double)diff, (double)(epsilon), \
+		(double)(expected), (double)(result) \
 	);\
 )
 
@@ -207,7 +207,7 @@ static void (*minunit_teardown)(void) = NULL;
 	__MU_ASSERT( \
 		diff < (epsilon), \
 		"Difference of %g not within %g, %g !~= %g", \
-		 diff, epsilon, \
+		diff, epsilon, \
 		(expected), (result) \
 	);\
 )
