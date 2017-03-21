@@ -78,7 +78,6 @@ static void (*minunit_teardown)(void) = NULL;
  */
 #define MU_RUN_SUITE(suite_name) MU__SAFE_BLOCK(\
 	MU_PRINTF("\r\n");\
-	MU_PRINTF("Suite: %s\r\n", #suite_name);\
 	suite_name();\
 	minunit_setup = NULL;\
 	minunit_teardown = NULL;\
@@ -102,10 +101,10 @@ static void (*minunit_teardown)(void) = NULL;
 	if (minunit_setup) (*minunit_setup)();\
 	minunit_status = 0;\
 	MU_PRINTF("\r\n");\
-	MU_PRINTF("Test: "#test"\r\n");\
+	MU_PRINTF("[%s.%s]\r\n" , __FUNCTION__, #test);\
 	test();\
 	minunit_run++;\
-	if(!minunit_status) MU_PRINTF("  OK\r\n");\
+	if(!minunit_status) MU_PRINTF("pass = true\r\n");\
 	fflush(stdout);\
 	if (minunit_teardown) (*minunit_teardown)();\
 )
@@ -127,8 +126,9 @@ static void (*minunit_teardown)(void) = NULL;
 #define __MU_ASSERT(test, message, ...)  MU__SAFE_BLOCK(\
 	minunit_assert++;\
 	if (!(test)) {\
-		MU_PRINTF("  Fail: \""#test"\" at %s:%d\r\n", __FILE__, __LINE__);\
-		MU_PRINTF("  Reason: "message"\r\n", __VA_ARGS__);\
+		MU_PRINTF("pass = false\r\n");\
+		MU_PRINTF("fail = \""#test" at %s:%d\"\r\n", __FILE__, __LINE__);\
+		MU_PRINTF("reason = \""message"\"\r\n", __VA_ARGS__);\
 		minunit_status = 1;\
 		minunit_fail++;\
 		return;\
@@ -217,7 +217,9 @@ static void (*minunit_teardown)(void) = NULL;
  * @param      message  The message to be showed to a user (generally a question)
  */
 #define mu_confirm(message) MU__SAFE_BLOCK(\
-	MU_PRINTF("  %s\r\n  'y' for yes, 'n' for no:\r\n", message);\
+	MU_PRINTF("prompt = \"%s\"\r\n", message);\
+	MU_PRINTF("# 'y' for yes, 'n' for no:\r\n");\
+	MU_PRINTF("# ");\
 	fflush(stdout);\
 	fflush(stdin);\
 	char mu_input;\
