@@ -45,4 +45,7 @@ fail = "mu_input == 'y' at minunit_example.c:52"
 reason = "Everything ok?"
 
 
-Total: 10 tests, 10 assertions, 6 failures
+[report]
+tests = 10
+assertions = 10
+failures = 6

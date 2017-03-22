@@ -114,7 +114,10 @@ static void (*minunit_teardown)(void) = NULL;
  */
 #define MU_REPORT() MU__SAFE_BLOCK(\
 	MU_PRINTF("\r\n\r\n");\
-	MU_PRINTF("Total: %d tests, %d assertions, %d failures\r\n", minunit_run, minunit_assert, minunit_fail);\
+	MU_PRINTF("[report]\r\n");\
+	MU_PRINTF("tests = %d\r\n", minunit_run);\
+	MU_PRINTF("assertions = %d\r\n", minunit_assert);\
+	MU_PRINTF("failures = %d\r\n", minunit_fail);\
 )
 
 /**
