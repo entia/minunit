@@ -1,0 +1,48 @@
+
+
+[test_suite.test_check]
+pass = true
+
+[test_suite.test_assert]
+pass = true
+
+[test_suite.test_assert_int_eq]
+pass = true
+
+[test_suite.test_mu_assert_double_close]
+pass = true
+
+[test_suite.test_check_fail]
+pass = false
+fail = "foo != 7 at minunit_example.c:20"
+reason = "Test failed"
+
+[test_suite.test_assert_fail]
+pass = false
+fail = "foo != 7 at minunit_example.c:28"
+reason = "foo should be <> 7"
+
+[test_suite.test_assert_int_eq_fail]
+pass = false
+fail = "5 == bar at minunit_example.c:36"
+reason = "5 expected but was 4"
+
+[test_suite.test_mu_assert_double_close_fail]
+pass = false
+fail = "diff < (0.01) at minunit_example.c:44"
+reason = "Difference of 0.0197 not within 0.01, 4.32 !~= 4.3003"
+
+[test_suite.test_fail]
+pass = false
+fail = "0 at minunit_example.c:48"
+reason = "Fail now!"
+
+[test_suite.test_confirm]
+prompt = "Everything ok?"
+# 'y' for yes, 'n' for no:
+# pass = false
+fail = "mu_input == 'y' at minunit_example.c:52"
+reason = "Everything ok?"
+
+
+Total: 10 tests, 10 assertions, 6 failures
