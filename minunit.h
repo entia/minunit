@@ -78,7 +78,7 @@ static void (*minunit_teardown)(void) = NULL;
  */
 #define MU_RUN_SUITE(suite_name) MU__SAFE_BLOCK(\
 	MU_PRINTF("\r\n");\
-	suite_name();\
+	(suite_name)();\
 	minunit_setup = NULL;\
 	minunit_teardown = NULL;\
 )
@@ -89,8 +89,8 @@ static void (*minunit_teardown)(void) = NULL;
  * @param      teardown_fun  The teardown fun
  */
 #define MU_SUITE_CONFIGURE(setup_fun, teardown_fun) MU__SAFE_BLOCK(\
-	minunit_setup = setup_fun;\
-	minunit_teardown = teardown_fun;\
+	minunit_setup = (setup_fun);\
+	minunit_teardown = (teardown_fun);\
 )
 
 /**
@@ -98,15 +98,14 @@ static void (*minunit_teardown)(void) = NULL;
  * @param      test  The test function (should be void f(void))
  */
 #define MU_RUN_TEST(test) MU__SAFE_BLOCK(\
-	if (minunit_setup) (*minunit_setup)();\
+	if (minunit_setup) {(*minunit_setup)();}\
 	minunit_status = 0;\
 	MU_PRINTF("\r\n");\
 	MU_PRINTF("[%s.%s]\r\n" , __func__, #test);\
-	test();\
+	(test)();\
 	minunit_run++;\
-	if(!minunit_status) MU_PRINTF("pass = true\r\n");\
-	fflush(stdout);\
-	if (minunit_teardown) (*minunit_teardown)();\
+	if (!minunit_status) { MU_PRINTF("pass = true\r\n"); }\
+	if (minunit_teardown) { (*minunit_teardown)(); }\
 )
 
 /**
@@ -142,20 +141,20 @@ static void (*minunit_teardown)(void) = NULL;
  * @brief      Check if value is truthy
  * @param      test     The value to be checked
  */
-#define mu_check(test) __MU_ASSERT(test, "%s", "Test failed")
+#define mu_check(test) __MU_ASSERT((test), "%s", "Test failed")
 
 /**
  * @brief      Just fail
  * @param      message  The message that will be printed
  */
-#define mu_fail(message) __MU_ASSERT(0, "%s", message)
+#define mu_fail(message) __MU_ASSERT(0, "%s", (message))
 
 /**
  * @brief      Check if the value is truthy print message on fail
  * @param      test     The value to be checked
  * @param      message  The message that will be printed on error
  */
-#define mu_assert(test, message) __MU_ASSERT(test, "%s", message)
+#define mu_assert(test, message) __MU_ASSERT((test), "%s", (message))
 
 /**
  * @brief      Check two ints for equality
@@ -164,9 +163,9 @@ static void (*minunit_teardown)(void) = NULL;
  */
 #define mu_assert_int_eq(expected, result) MU__SAFE_BLOCK(\
 	__MU_ASSERT(\
-		expected == result, \
+		(expected) == (result), \
 		"%d expected but was %d", \
-		expected, result \
+		(expected), (result) \
 	);\
 )
 
@@ -177,9 +176,9 @@ static void (*minunit_teardown)(void) = NULL;
  */
 #define mu_assert_long_int_eq(expected, result) MU__SAFE_BLOCK(\
 	__MU_ASSERT(\
-		expected == result, \
+		(expected) == (result), \
 		"%ld expected but was %ld", \
-		expected, result \
+		(expected), (result) \
 	);\
 )
 
@@ -210,7 +209,7 @@ static void (*minunit_teardown)(void) = NULL;
 	__MU_ASSERT( \
 		diff < (epsilon), \
 		"Difference of %g not within %g, %g !~= %g", \
-		diff, epsilon, \
+		diff, (epsilon), \
 		(expected), (result) \
 	);\
 )
@@ -220,14 +219,14 @@ static void (*minunit_teardown)(void) = NULL;
  * @param      message  The message to be showed to a user (generally a question)
  */
 #define mu_confirm(message) MU__SAFE_BLOCK(\
-	MU_PRINTF("prompt = \"%s\"\r\n", message);\
+	MU_PRINTF("prompt = \"%s\"\r\n", (message));\
 	MU_PRINTF("# 'y' for yes, 'n' for no:\r\n");\
 	MU_PRINTF("# ");\
 	fflush(stdout);\
 	fflush(stdin);\
 	char mu_input;\
 	do { mu_input = MU_GETCHAR(); } while(mu_input != 'y' && mu_input != 'n');\
-	__MU_ASSERT(mu_input == 'y', "%s", message);\
+	__MU_ASSERT(mu_input == 'y', "%s", (message));\
 )
 
 #ifdef __cplusplus
