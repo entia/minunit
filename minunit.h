@@ -101,7 +101,7 @@ static void (*minunit_teardown)(void) = NULL;
 	if (minunit_setup) (*minunit_setup)();\
 	minunit_status = 0;\
 	MU_PRINTF("\r\n");\
-	MU_PRINTF("[%s.%s]\r\n" , __FUNCTION__, #test);\
+	MU_PRINTF("[%s.%s]\r\n" , __func__, #test);\
 	test();\
 	minunit_run++;\
 	if(!minunit_status) MU_PRINTF("pass = true\r\n");\
@@ -224,7 +224,7 @@ static void (*minunit_teardown)(void) = NULL;
 	fflush(stdin);\
 	char mu_input;\
 	do { mu_input = MU_GETCHAR(); } while(mu_input != 'y' && mu_input != 'n');\
-	__MU_ASSERT(mu_input == 'y', "%s", "  "message);\
+	__MU_ASSERT(mu_input == 'y', "%s", message);\
 )
 
 #ifdef __cplusplus
