@@ -221,11 +221,11 @@ static void (*minunit_teardown)(void) = NULL;
 #define mu_confirm(message) MU__SAFE_BLOCK(\
 	MU_PRINTF("prompt = \"%s\"\r\n", (message));\
 	MU_PRINTF("# 'y' for yes, 'n' for no:\r\n");\
-	MU_PRINTF("# ");\
 	fflush(stdout);\
 	fflush(stdin);\
 	char mu_input;\
 	do { mu_input = MU_GETCHAR(); } while(mu_input != 'y' && mu_input != 'n');\
+	MU_PRINTF("\r\n");\
 	__MU_ASSERT(mu_input == 'y', "%s", (message));\
 )
 
