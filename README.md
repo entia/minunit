@@ -1,5 +1,7 @@
 # MinUnit
 
+[![Build Status](https://travis-ci.org/entia/minunit.svg?branch=master)](https://travis-ci.org/entia/minunit)
+
 Minunit is a minimal unit testing framework for **embedded C/C++** self-contained in a single header file. It it also has a handy serial runner.
 
 ### Features
