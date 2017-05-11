@@ -47,13 +47,13 @@ static void (*minunit_teardown)(void) = NULL;
  * @brief      Helper for defining test function
  * @param      method_name  The method name
  */
-#define MU_TEST(method_name) static void method_name()
+#define MU_TEST(method_name) static void method_name(void)
 
 /**
  * @brief      Helper for defining a suite
  * @param      method_name  The method name
  */
-#define MU_TEST_SUITE(suite_name) void suite_name()
+#define MU_TEST_SUITE(suite_name) void suite_name(void)
 
 /**
  * @brief      Declares the extern variables that store information about test
@@ -82,6 +82,18 @@ static void (*minunit_teardown)(void) = NULL;
 	minunit_setup = NULL;\
 	minunit_teardown = NULL;\
 )
+
+/**
+ * @brief      Run multiple suite (collection of tests)
+ * @param      ...  List of suites each one as a argument
+ */
+#define MU_RUN_SUITES(...) do {\
+    static void (*mu_suites[])(void) = {__VA_ARGS__};\
+    for (uint32_t mu_i = 0; mu_i < sizeof(mu_suites)/sizeof(void(*)(void)); ++mu_i)\
+    {\
+        mu_suites[mu_i]();\
+    }\
+} while(0)
 
 /**
  * @brief      Defines functions that will run before and after each test in suite
