@@ -29,6 +29,7 @@
 #endif
 
 #include <stdio.h>
+#include <stdint.h>
 #include <math.h>
 #include "minunit_config.h"
 
@@ -169,15 +170,15 @@ static void (*minunit_teardown)(void) = NULL;
 #define mu_assert(test, message) __MU_ASSERT((test), "%s", (message))
 
 /**
- * @brief      Check two ints for equality
+ * @brief      Check two uints for equality
  * @param      expected  The expected value
  * @param      result    The computed value
  */
-#define mu_assert_int_eq(expected, result) MU__SAFE_BLOCK(\
+#define mu_assert_uint_eq(expected, result) MU__SAFE_BLOCK(\
 	__MU_ASSERT(\
 		(expected) == (result), \
-		"%d expected but was %d", \
-		(expected), (result) \
+		"%lu expected but was %lu", \
+		(uint32_t)(expected), (uint32_t)(result) \
 	);\
 )
 
@@ -186,7 +187,7 @@ static void (*minunit_teardown)(void) = NULL;
  * @param      expected  The expected value
  * @param      result    The computed value
  */
-#define mu_assert_long_int_eq(expected, result) MU__SAFE_BLOCK(\
+#define mu_assert_int_eq(expected, result) MU__SAFE_BLOCK(\
 	__MU_ASSERT(\
 		(expected) == (result), \
 		"%ld expected but was %ld", \
