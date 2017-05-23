@@ -191,7 +191,7 @@ static void (*minunit_teardown)(void) = NULL;
 	__MU_ASSERT(\
 		(expected) == (result), \
 		"%ld expected but was %ld", \
-		(expected), (result) \
+		(int32_t)(expected), (int32_t)(result) \
 	);\
 )
 
