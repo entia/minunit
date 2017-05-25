@@ -30,6 +30,8 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <stdint.h>
+#include <inttypes.h>			
 #include "minunit_config.h"
 
 /*  Misc. counters */
