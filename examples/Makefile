@@ -1,4 +1,4 @@
-CFLAGS += -I../ -I. -g
+CFLAGS += -Wall -I../ -I. -g
 EXEC = minunit_example.out
 
 $(EXEC):

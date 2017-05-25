@@ -52,6 +52,10 @@ MU_TEST(test_confirm) {
     mu_confirm("Everything ok?");
 }
 
+MU_TEST(test_skip) {
+    mu_skip();
+}
+
 
 MU_TEST_SUITE(test_suite) {
     MU_SUITE_CONFIGURE(&test_setup, &test_teardown);
@@ -69,6 +73,7 @@ MU_TEST_SUITE(test_suite) {
 
     MU_RUN_TEST(test_fail);
     MU_RUN_TEST(test_confirm);
+    MU_RUN_TEST(test_skip);
 }
 
 MU_INIT();
