@@ -173,26 +173,40 @@ static void (*minunit_teardown)(void) = NULL;
  * @param      expected  The expected value
  * @param      result    The computed value
  */
-#define mu_assert_int_eq(expected, result) MU__SAFE_BLOCK(\
+#define mu_assert_int_eq(size, expected, result) MU__SAFE_BLOCK(\
+	int ##size ##_t expected_p = expected;\
+	int ##size ##_t result_p = result;\
 	__MU_ASSERT(\
-		(expected) == (result), \
-		"%d expected but was %d", \
-		(expected), (result) \
+		(expected_p) == (result_p), \
+		"%"PRId ##size" expected but was %"PRId ##size, \
+		(expected_p), (result_p) \
 	);\
 )
 
+#define mu_assert_int8_eq(expected, result) mu_assert_int_eq(8, expected, result);
+#define mu_assert_int16_eq(expected, result) mu_assert_int_eq(16, expected, result);
+#define mu_assert_int32_eq(expected, result) mu_assert_int_eq(32, expected, result);
+#define mu_assert_int64_eq(expected, result) mu_assert_int_eq(64, expected, result);
+
 /**
- * @brief      Check two ints for equality
+ * @brief      Check two unsigned ints for equality
  * @param      expected  The expected value
  * @param      result    The computed value
  */
-#define mu_assert_long_int_eq(expected, result) MU__SAFE_BLOCK(\
+#define mu_assert_uint_eq(size, expected, result) MU__SAFE_BLOCK(\
+	uint ##size ##_t expected_p = expected;\
+	uint ##size ##_t result_p = result;\
 	__MU_ASSERT(\
-		(expected) == (result), \
-		"%ld expected but was %ld", \
-		(expected), (result) \
+		(expected_p) == (result_p), \
+		"%"PRIu ##size" expected but was %"PRIu ##size, \
+		(result_p), (result_p) \
 	);\
 )
+
+#define mu_assert_uint8_eq(expected, result) mu_assert_iunt_eq(8, expected, result);
+#define mu_assert_uint16_eq(expected, result) mu_assert_uint_eq(16, expected, result);
+#define mu_assert_uint32_eq(expected, result) mu_assert_uint_eq(32, expected, result);
+#define mu_assert_uint64_eq(expected, result) mu_assert_uint_eq(64, expected, result);
 
 /**
  * @brief      Check if two floats are similar
