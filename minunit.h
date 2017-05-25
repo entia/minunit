@@ -36,6 +36,7 @@
 extern int minunit_run;
 extern int minunit_assert;
 extern int minunit_fail;
+extern int minunit_skipped;
 
 static int minunit_status = 0;
 
@@ -63,6 +64,7 @@ static void (*minunit_teardown)(void) = NULL;
 	int minunit_run = 0;\
 	int minunit_assert = 0;\
 	int minunit_fail = 0;\
+	int minunit_skipped = 0;\
 
 /**
  * @brief      Protects the macro insides form the outside world
@@ -116,7 +118,15 @@ static void (*minunit_teardown)(void) = NULL;
 	MU_PRINTF("[%s.%s]\r\n" , __func__, #test);\
 	(test)();\
 	minunit_run++;\
-	if (!minunit_status) { MU_PRINTF("pass = true\r\n"); }\
+	switch(minunit_status) {\
+		case 0: MU_PRINTF("pass = true\r\n"); break;\
+		case 1: break; /* Already sorted in assert */\
+		case 2: \
+			minunit_skipped++;\
+			MU_PRINTF("skipped = true\r\n");\
+			break;\
+		default: break;\
+	}\
 	if (minunit_teardown) { (*minunit_teardown)(); }\
 )
 
@@ -129,6 +139,7 @@ static void (*minunit_teardown)(void) = NULL;
 	MU_PRINTF("tests = %d\r\n", minunit_run);\
 	MU_PRINTF("assertions = %d\r\n", minunit_assert);\
 	MU_PRINTF("failures = %d\r\n", minunit_fail);\
+	MU_PRINTF("skipped = %d\r\n", minunit_skipped);\
 )
 
 /**
@@ -160,6 +171,14 @@ static void (*minunit_teardown)(void) = NULL;
  * @param      message  The message that will be printed
  */
 #define mu_fail(message) __MU_ASSERT(0, "%s", (message))
+
+/**
+ * @brief      Skip test
+ */
+#define mu_skip() MU__SAFE_BLOCK(\
+	minunit_status = 2;\
+	return;\
+)
 
 /**
  * @brief      Check if the value is truthy print message on fail
@@ -230,16 +249,23 @@ static void (*minunit_teardown)(void) = NULL;
  * @brief      Prompt user to verify something, they choose 'y' or 'n'
  * @param      message  The message to be showed to a user (generally a question)
  */
-#define mu_confirm(message) MU__SAFE_BLOCK(\
-	MU_PRINTF("prompt = \"%s\"\r\n", (message));\
-	MU_PRINTF("# 'y' for yes, 'n' for no:\r\n");\
-	fflush(stdout);\
-	fflush(stdin);\
-	char mu_input;\
-	do { mu_input = MU_GETCHAR(); } while(mu_input != 'y' && mu_input != 'n');\
-	MU_PRINTF("\r\n");\
-	__MU_ASSERT(mu_input == 'y', "%s", (message));\
-)
+#ifdef MU_NO_INTERACTION
+	#define mu_confirm(message) MU__SAFE_BLOCK(\
+		minunit_status = 2;\
+		return;\
+	)
+#else
+	#define mu_confirm(message) MU__SAFE_BLOCK(\
+		MU_PRINTF("prompt = \"%s\"\r\n", (message));\
+		MU_PRINTF("# 'y' for yes, 'n' for no:\r\n");\
+		fflush(stdout);\
+		fflush(stdin);\
+		char mu_input;\
+		do { mu_input = MU_GETCHAR(); } while(mu_input != 'y' && mu_input != 'n');\
+		MU_PRINTF("\r\n");\
+		__MU_ASSERT(mu_input == 'y', "%s", (message));\
+	)
+#endif
 
 #ifdef __cplusplus
 }
