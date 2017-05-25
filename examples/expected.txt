@@ -45,8 +45,12 @@ pass = false
 fail = "mu_input == 'y' at minunit_example.c:52"
 reason = "Everything ok?"
 
+[test_suite.test_skip]
+skipped = true
+
 
 [report]
-tests = 10
+tests = 11
 assertions = 10
 failures = 6
+skipped = 1
