@@ -135,15 +135,16 @@ static void (*minunit_teardown)(void) = NULL;
 
 /**
  * @brief      [Private] Master assert
+ * @param      name     Name of the assertion (will be printed on fail)
  * @param      test     The test to be preformed
  * @param      message  The format string, pretend this is a printf
  * @param      ...      Values for the pretend printf beforehand
  */
-#define __MU_ASSERT(test, message, ...)  MU__SAFE_BLOCK(\
+#define __MU_ASSERT(name, test, message, ...)  MU__SAFE_BLOCK(\
 	minunit_assert++;\
 	if (!(test)) {\
 		MU_PRINTF("pass = false\r\n");\
-		MU_PRINTF("fail = \""#test" at %s:%d\"\r\n", __FILE__, __LINE__);\
+		MU_PRINTF("fail = \"%s at %s:%d\"\r\n", name, __FILE__, __LINE__);\
 		MU_PRINTF("reason = \""message"\"\r\n", __VA_ARGS__);\
 		minunit_status = 1;\
 		minunit_fail++;\
@@ -155,20 +156,20 @@ static void (*minunit_teardown)(void) = NULL;
  * @brief      Check if value is truthy
  * @param      test     The value to be checked
  */
-#define mu_check(test) __MU_ASSERT((test), "%s", "Test failed")
+#define mu_check(test) __MU_ASSERT("mu_check", (test), "%s", "Test failed")
 
 /**
  * @brief      Just fail
  * @param      message  The message that will be printed
  */
-#define mu_fail(message) __MU_ASSERT(0, "%s", (message))
+#define mu_fail(message) __MU_ASSERT("mu_fail", 0, "%s", (message))
 
 /**
  * @brief      Check if the value is truthy print message on fail
  * @param      test     The value to be checked
  * @param      message  The message that will be printed on error
  */
-#define mu_assert(test, message) __MU_ASSERT((test), "%s", (message))
+#define mu_assert(test, message) __MU_ASSERT("mu_assert", (test), "%s", (message))
 
 /**
  * @brief      Check two ints for equality
@@ -179,6 +180,7 @@ static void (*minunit_teardown)(void) = NULL;
 	int ##size ##_t expected_p = expected;\
 	int ##size ##_t result_p = result;\
 	__MU_ASSERT(\
+		"mu_assert_int_eq",\
 		(expected_p) == (result_p), \
 		"%"PRId ##size" expected but was %"PRId ##size, \
 		(expected_p), (result_p) \
@@ -199,6 +201,7 @@ static void (*minunit_teardown)(void) = NULL;
 	uint ##size ##_t expected_p = expected;\
 	uint ##size ##_t result_p = result;\
 	__MU_ASSERT(\
+		"mu_assert_uint_eq",\
 		(expected_p) == (result_p), \
 		"%"PRIu ##size" expected but was %"PRIu ##size, \
 		(result_p), (result_p) \
@@ -219,6 +222,7 @@ static void (*minunit_teardown)(void) = NULL;
 #define mu_assert_float_close(expected, result, epsilon) MU__SAFE_BLOCK(\
 	float diff = fabsf((expected) - (result)); \
 	__MU_ASSERT( \
+		"mu_assert_float_close",\
 		diff < (epsilon), \
 		"Difference of %f not within %f, %f !~= %f", \
 		(double)diff, (double)(epsilon), \
@@ -235,6 +239,7 @@ static void (*minunit_teardown)(void) = NULL;
 #define mu_assert_double_close(expected, result, epsilon) MU__SAFE_BLOCK(\
 	double diff = fabs((expected) - (result)); \
 	__MU_ASSERT( \
+		"mu_assert_double_close",\
 		diff < (epsilon), \
 		"Difference of %g not within %g, %g !~= %g", \
 		diff, (epsilon), \
@@ -254,7 +259,7 @@ static void (*minunit_teardown)(void) = NULL;
 	char mu_input;\
 	do { mu_input = MU_GETCHAR(); } while(mu_input != 'y' && mu_input != 'n');\
 	MU_PRINTF("\r\n");\
-	__MU_ASSERT(mu_input == 'y', "%s", (message));\
+	__MU_ASSERT("mu_confirm", mu_input == 'y', "%s", (message));\
 )
 
 #ifdef __cplusplus
