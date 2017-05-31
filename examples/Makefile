@@ -1,8 +1,9 @@
-CFLAGS += -I../ -I. -g
+override CFLAGS += -Wall -Wextra -I../ -I. -g
+FILE = minunit_example.c
 EXEC = minunit_example.out
 
-$(EXEC):
-	$(CC) $(CFLAGS) minunit_example.c -o $(EXEC)
+$(EXEC): $(FILE) ../minunit.h
+	$(CC) $(CFLAGS) $(FILE) -o $@
 
 all: $(EXEC)
 
