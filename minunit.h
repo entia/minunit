@@ -205,7 +205,7 @@ static void (*minunit_teardown)(void) = NULL;
 	);\
 )
 
-#define mu_assert_uint8_eq(expected, result) mu_assert_iunt_eq(8, expected, result);
+#define mu_assert_uint8_eq(expected, result) mu_assert_uint_eq(8, expected, result);
 #define mu_assert_uint16_eq(expected, result) mu_assert_uint_eq(16, expected, result);
 #define mu_assert_uint32_eq(expected, result) mu_assert_uint_eq(32, expected, result);
 #define mu_assert_uint64_eq(expected, result) mu_assert_uint_eq(64, expected, result);

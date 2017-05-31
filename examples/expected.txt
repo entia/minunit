@@ -6,6 +6,9 @@ pass = true
 [test_suite.test_assert]
 pass = true
 
+[test_suite.test_assert_uint_eq]
+pass = true
+
 [test_suite.test_assert_int_eq]
 pass = true
 
@@ -14,27 +17,32 @@ pass = true
 
 [test_suite.test_check_fail]
 pass = false
-fail = "(foo != 7) at minunit_example.c:20"
+fail = "(foo != 7) at minunit_example.c:21"
 reason = "Test failed"
 
 [test_suite.test_assert_fail]
 pass = false
-fail = "(foo != 7) at minunit_example.c:28"
+fail = "(foo != 7) at minunit_example.c:29"
 reason = "foo should be <> 7"
+
+[test_suite.test_assert_uint_eq_fail]
+pass = false
+fail = "(expected_p) == (result_p) at minunit_example.c:37"
+reason = "4 expected but was 4"
 
 [test_suite.test_assert_int_eq_fail]
 pass = false
-fail = "(5) == (bar) at minunit_example.c:36"
-reason = "5 expected but was 4"
+fail = "(expected_p) == (result_p) at minunit_example.c:45"
+reason = "1 expected but was 7"
 
 [test_suite.test_mu_assert_double_close_fail]
 pass = false
-fail = "diff < (0.01) at minunit_example.c:44"
+fail = "diff < (0.01) at minunit_example.c:54"
 reason = "Difference of 0.0197 not within 0.01, 4.32 !~= 4.3003"
 
 [test_suite.test_fail]
 pass = false
-fail = "0 at minunit_example.c:48"
+fail = "0 at minunit_example.c:58"
 reason = "Fail now!"
 
 [test_suite.test_confirm]
@@ -42,11 +50,11 @@ prompt = "Everything ok?"
 # 'y' for yes, 'n' for no:
 
 pass = false
-fail = "mu_input == 'y' at minunit_example.c:52"
+fail = "mu_input == 'y' at minunit_example.c:62"
 reason = "Everything ok?"
 
 
 [report]
-tests = 10
-assertions = 10
-failures = 6
+tests = 12
+assertions = 12
+failures = 7
