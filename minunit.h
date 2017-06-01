@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdint.h>
-#include <inttypes.h>			
+#include <inttypes.h>
 #include "minunit_config.h"
 
 /*  Misc. counters */
@@ -204,7 +204,7 @@ static void (*minunit_teardown)(void) = NULL;
 		"mu_assert_uint_eq",\
 		(expected_p) == (result_p), \
 		"%"PRIu ##size" expected but was %"PRIu ##size, \
-		(result_p), (result_p) \
+		(expected_p), (result_p) \
 	);\
 )
 
