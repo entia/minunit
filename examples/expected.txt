@@ -28,7 +28,7 @@ reason = "foo should be <> 7"
 [test_suite.test_assert_uint_eq_fail]
 pass = false
 fail = "mu_assert_uint_eq at minunit_example.c:37"
-reason = "4 expected but was 4"
+reason = "23 expected but was 4"
 
 [test_suite.test_assert_int_eq_fail]
 pass = false
