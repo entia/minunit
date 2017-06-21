@@ -67,18 +67,18 @@ MU_TEST_SUITE(test_suite) {
     MU_SUITE_CONFIGURE(&test_setup, &test_teardown);
 
     MU_RUN_TEST(test_check);
-    MU_RUN_TEST(test_assert);
+    MU_RUN_COND_TEST(COOL_TESTS, test_assert);
     MU_RUN_TEST(test_assert_uint_eq);
     MU_RUN_TEST(test_assert_int_eq);
     MU_RUN_TEST(test_mu_assert_double_close);
-
 
     MU_RUN_TEST(test_check_fail);
     MU_RUN_TEST(test_assert_fail);
     MU_RUN_TEST(test_assert_uint_eq_fail);
     MU_RUN_TEST(test_assert_int_eq_fail);
     MU_RUN_TEST(test_mu_assert_double_close_fail);
-
+    MU_RUN_COND_TEST(BONUS_TESTS, test_assert_fail);
+    
     MU_RUN_TEST(test_fail);
     MU_RUN_TEST(test_confirm);
 }

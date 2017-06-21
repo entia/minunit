@@ -123,6 +123,17 @@ static void (*minunit_teardown)(void) = NULL;
 )
 
 /**
+ * @brief      Run test only if condition is true
+ * @param      t_condition  Tests are run only if this condition is evaluated as true
+ * @param      test         The test function (should be void f(void))
+ */
+#define MU_RUN_COND_TEST(t_condition, test) MU__SAFE_BLOCK(\
+	if (t_condition) {\
+		MU_RUN_TEST(test);\
+	}\
+)
+
+/**
  * @brief      Print summary statistics about the test
  */
 #define MU_REPORT() MU__SAFE_BLOCK(\
