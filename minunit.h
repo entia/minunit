@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdint.h>
-#include <inttypes.h>			
+#include <inttypes.h>
 #include "minunit_config.h"
 
 /*  Misc. counters */
@@ -267,7 +267,7 @@ static void (*minunit_teardown)(void) = NULL;
 	MU_PRINTF("# 'y' for yes, 'n' for no:\r\n");\
 	fflush(stdout);\
 	fflush(stdin);\
-	char mu_input;\
+	int mu_input;\
 	do { mu_input = MU_GETCHAR(); } while(mu_input != 'y' && mu_input != 'n');\
 	MU_PRINTF("\r\n");\
 	__MU_ASSERT("mu_confirm", mu_input == 'y', "%s", (message));\
