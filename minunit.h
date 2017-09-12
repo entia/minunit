@@ -67,6 +67,15 @@ static void (*minunit_teardown)(void) = NULL;
 	int minunit_fail = 0;\
 
 /**
+ * @brief      Resets all minunit state variables
+ */
+#define MU_RESET() \
+	minunit_run = 0;\
+	minunit_assert = 0;\
+	minunit_fail = 0;\
+	minunit_status = 0;\
+
+/**
  * @brief      Protects the macro insides form the outside world
  * @param      block  The block to be in separate scope
  */
